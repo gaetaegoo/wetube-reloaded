@@ -1,0 +1,17 @@
+extends base.pug
+
+block content 
+    video(src="/" + video.fileUrl, controls)
+    //- h3 #{video.views} #{video.views === 1 ? "view" : "views"}
+    div
+        p=video.description
+        small=video.createdAt
+    div 
+        small Uploaded by 
+            a(href=`/users/${video.owner._id}`)=video.owner.name
+    hr
+    //- video.owner의 id는 object인데, loggedInUser._id는 string
+    if String(video.owner._id) === String(loggedInUser._id)
+        a(href=`${video.id}/edit`) Edit Video &rarr;
+        br
+        a(href=`${video.id}/delete`) Delete Video &rarr;

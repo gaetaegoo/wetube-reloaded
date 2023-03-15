@@ -1,0 +1,35 @@
+doctype html
+html(lang="ko")
+    head
+        title #{pageTitle} | Wetube
+        link(rel="stylesheet" href="https://unpkg.com/mvp.css@1.12/mvp.css")
+        link(rel="stylesheet" href="/static/css/styles.css")
+    body
+        header
+            h1=pageTitle
+            nav
+                ul
+                    li
+                        a(href="/") Home |
+                    if loggedIn
+                        li
+                            a(href="/videos/upload") Upload Video |
+                        //- middlewares에서 만든 loggedInUser 활용
+                        li 
+                            a(href=`/users/${loggedInUser._id}`) My Profile |
+                        li 
+                            a(href="/users/edit") Edit Profile |
+                        li
+                            a(href="/users/logout") Logout |
+                    else
+                        li
+                            a(href="/join") Join |
+                        li 
+                            a(href="/login") Login |
+                    li
+                        a(href="/search") Search |
+        main
+            block content
+        include partials/footer.pug
+        //- static인 이유는 우리 서버에 등록한 이름이라서
+        script(src="/static/js/main.js")
