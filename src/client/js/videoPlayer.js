@@ -1,11 +1,14 @@
 const video = document.querySelector("video");
 const playBtn = document.getElementById("play");
+const playBtnIcon = playBtn.querySelector("i");
 const muteBtn = document.getElementById("mute");
+const muteBtnIcon = muteBtn.querySelector("i");
 const volumeRange = document.getElementById("volume");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullScreen");
+const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
@@ -21,14 +24,14 @@ const handlePlayClick = (event) => {
     // paused: true or false를 반환 함
     video.paused = video.paused ? video.play() : video.pause();
 
-    playBtn.innerText = video.paused ? "Play" : "Pause";
+    playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
 };
 
 const handleMuteClick = (event) => {
     // muted: true or false를 반환
     video.muted = video.muted ? false : true;
 
-    muteBtn.innerText = video.muted ? "Unmute" : "Mute";
+    muteBtn.classList = video.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
 
     /*
      * 1. 볼륨을 최대로 내릴 때, inputVolume은 값이 계속 내려가면서 저장
@@ -99,7 +102,7 @@ const handleTimelineChange = (event) => {
     const {
         target: { value },
     } = event;
-    // video.currentTime: get or set 둘 다 가능
+    // currentTime: get or set 둘다 가능
     video.currentTime = value;
 };
 
@@ -108,11 +111,11 @@ const handleFullscreen = (event) => {
     if (fullscreen) {
         // exitFullscreen은 document 필요
         document.exitFullscreen();
-        fullScreenBtn.innerText = "Enter Full Screen";
+        fullScreenIcon.classList = "fas fa-expand";
     } else {
         // requestFullscreen은 element(videoContainer) 필요
         videoContainer.requestFullscreen();
-        fullScreenBtn.innerText = "Exit Full Screen";
+        fullScreenIcon.classList = "fas fa-compress";
     }
 };
 
@@ -150,10 +153,10 @@ muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleInputVolume);
 volumeRange.addEventListener("change", handleChangeVolume);
 // loadedmetadata: 미디어의 첫 번째 프레임이 로딩 완료된 시점에 발생
-video.addEventListener("loadedmetadata", handleLoadedMetadata);
+video.addEventListener("loadeddata", handleLoadedMetadata);
 // timeupdate: currentTime 속성이 변경되는 시점에 발생
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullscreen);
-video.addEventListener("mousemove", handleMouseMove);
-video.addEventListener("mouseleave", handleMouseLeave);
+videoContainer.addEventListener("mousemove", handleMouseMove);
+videoContainer.addEventListener("mouseleave", handleMouseLeave);
