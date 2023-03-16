@@ -9,4 +9,6 @@ html(lang="ko")
         main
             block content
         include partials/footer.pug
-    block scripts 
+    //- 어떠한 페이지로 가든 async와 await을 사용 가능
+    script(src="/static/js/main.js")
+    block scripts
