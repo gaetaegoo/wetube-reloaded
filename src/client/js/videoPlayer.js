@@ -12,6 +12,9 @@ const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
+// watch.pug에서 보낸 'div#videoContainer(data-id=video._id)'의 id 정보
+// console.log(videoContainer.dataset);
+
 const defaultVolume = 0.5;
 let inputVolume = defaultVolume;
 let changeVolume = defaultVolume;
@@ -148,6 +151,15 @@ const handleMouseLeave = (event) => {
     controlsTimeout = setTimeout(hideControls, 3000);
 };
 
+const handleEnded = (event) => {
+    // watch.pug에서 보낸 id 정보
+    const { id } = videoContainer.dataset;
+    // fetch: 백엔드로 요청 보내기
+    fetch(`/api/videos/${id}/view`, {
+        method: "POST",
+    });
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleInputVolume);
@@ -156,7 +168,9 @@ volumeRange.addEventListener("change", handleChangeVolume);
 video.addEventListener("loadeddata", handleLoadedMetadata);
 // timeupdate: currentTime 속성이 변경되는 시점에 발생
 video.addEventListener("timeupdate", handleTimeUpdate);
-timeline.addEventListener("input", handleTimelineChange);
-fullScreenBtn.addEventListener("click", handleFullscreen);
+// ended는 video에만 적용 가능함
+video.addEventListener("ended", handleEnded);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
+timeline.addEventListener("input", handleTimelineChange);
+fullScreenBtn.addEventListener("click", handleFullscreen);

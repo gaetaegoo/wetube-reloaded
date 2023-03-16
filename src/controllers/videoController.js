@@ -204,3 +204,18 @@ export const search = async (req, res) => {
     }
     return res.render("search", { pageTitle: "Search", videos });
 };
+
+// 조회수 기록
+export const registerView = async (req, res) => {
+    const { id } = req.params;
+    const video = await Video.findById(id);
+    if (!video) {
+        // 그냥 status를 하면 뒤에 .render같은 것이 필요 함(연결이 안 끝나기 때문)
+        // 따라서 sendStatus를 해서 상태코드를 보내야 끝남
+        // return res.status(404);
+        return res.sendStatus(404);
+    }
+    video.meta.views = video.meta.views + 1;
+    await video.save();
+    return res.sendStatus(200);
+};
