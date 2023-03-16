@@ -8,7 +8,11 @@ const path = require("path");
 // console.log(__dirname);
 
 module.exports = {
-    entry: "./src/client/js/main.js",
+    entry: {
+        // 여러개의 entry 생성
+        main: "./src/client/js/main.js",
+        videoPlayer: "./src/client/js/videoPlayer.js",
+    },
     mode: "development",
     watch: true,
     plugins: [
@@ -17,7 +21,8 @@ module.exports = {
         }),
     ],
     output: {
-        filename: "js/main.js",
+        // 여러개의 entry를 위한 [name] 변수
+        filename: "js/[name].js",
         path: path.resolve(__dirname, "assets"),
         clean: true,
     },

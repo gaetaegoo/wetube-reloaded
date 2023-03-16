@@ -2003,3 +2003,176 @@ output: {
 <!-- #10 STYLES 강의 참조 -->
 
 <!-- Video Player -->
+
+71. 비디오 플레어이를 위한 js 파일
+
+-   https://developer.mozilla.org/ko/docs/Web/API/HTMLMediaElement
+
+```javascript
+entry: {
+        // 여러개의 entry 생성
+        main: "./src/client/js/main.js",
+        videoPlayer: "./src/client/js/videoPlayer.js",
+    },
+
+// 여러개의 entry를 위한 [name] 변수
+        filename: "js/[name].js",
+```
+
+-   watch.pug와 videoPlayer.js
+
+```pug
+//- watch.pug
+div
+    button#play Play
+    button#mute Mute
+    span#time 00:00/00:00
+    input(type="range", step="0.1", min="0", max="1")#volume
+
+block scripts
+    //- static인 이유는 우리 서버에 등록한 이름이라서
+    script(src="/static/js/videoPlayer.js")
+```
+
+-   비디오 플레이 버튼 + 비디오 뮤트 버튼
+
+```javascript
+// videoPlayer.js
+const video = document.querySelector("video");
+const playBtn = document.getElementById("play");
+const muteBtn = document.getElementById("mute");
+const time = document.getElementById("time");
+const volumeRange = document.getElementById("volume");
+
+const defaultVolume = 0.5;
+let inputVolume = defaultVolume;
+let changeVolume = defaultVolume;
+video.volume = defaultVolume;
+
+const handlePlayClick = (event) => {
+    // paused: true or false를 반환 함
+    video.paused = video.paused ? video.play() : video.pause();
+
+    playBtn.innerText = video.paused ? "Play" : "Pause";
+};
+
+const handleMuteClick = (event) => {
+    // muted: true or false를 반환
+    video.muted = video.muted ? false : true;
+
+    muteBtn.innerText = video.muted ? "Unmute" : "Mute";
+
+    /*
+     * 1. 볼륨을 최대로 내릴 때, inputVolume은 값이 계속 내려가면서 저장
+     * 2. 따라서 inputVolume은 changeVolume보다 값이 클 수 없음(고정 상황)
+     * 3. 만약 unmute(video.volume === 0)시 'changeVolume > inputVolume'라면,
+     * 4. changeVolume으로 돌아가고(볼륨을 끌어내리면서 mute한 상황)
+     * 5. 만약 둘의 값이 같은 경우(바로 mute버튼을 클릭한 상황)은 inputVolume으로 돌아감
+     */
+    volumeRange.value = video.muted
+        ? 0
+        : inputVolume < changeVolume
+        ? changeVolume
+        : inputVolume;
+
+    video.volume = volumeRange.value;
+};
+
+const handleInputVolume = (event) => {
+    const {
+        target: { value },
+    } = event;
+
+    if (video.muted) {
+        video.muted = false;
+        muteBtn.innerText = "Mute";
+    }
+
+    if (video.volume === 0) {
+        video.muted = true;
+        muteBtn.innerText = "Unmute";
+    }
+
+    inputVolume = value;
+    video.volume = value;
+};
+
+function handleChangeVolume(event) {
+    const {
+        target: { value },
+    } = event;
+
+    if (video.volume === 0) {
+        video.muted = true;
+        muteBtn.innerText = "Unmute";
+    } else {
+        changeVolume = value;
+    }
+}
+
+playBtn.addEventListener("click", handlePlayClick);
+muteBtn.addEventListener("click", handleMuteClick);
+volumeRange.addEventListener("input", handleInputVolume);
+volumeRange.addEventListener("change", handleChangeVolume);
+```
+
+72. Duration and Current Time(미디어 재생바)
+
+-   loadedMetadata: 비디오를 제외한 모든 것, 미디어의 첫 번째 프레임이 로딩 완료된 시점에 발생
+-   timeupdate: currentTime 속성이 변경되는 시점에 발생
+
+```javascript
+const handleLoadedMetadata = (event) => {
+    totalTime.innerText = Math.floor(video.duration);
+};
+
+const handleTimeUpdate = (event) => {
+    currentTime.innerText = Math.floor(video.currentTime);
+};
+
+video.addEventListener("loadedmetadata", handleLoadedMetadata);
+video.addEventListener("timeupdate", handleTimeUpdate);
+```
+
+73. Date Constructor: JS안에 있는 date class
+
+-   컴퓨터는 1970년 1월 1일부터 날짜를 세기 시작 함
+-   new Date(): ()안에 넣어야할 argument는, 이 시간을 기준으로 한 밀리초여야 함
+
+-   29초 뒤의 시간을 얻고 싶은데 어떻게 할까?
+
+```javascript
+// substring(시작 인덱스, 종료 인덱스)
+new Date(29 * 1000); // Fri Mar 17 2023 00:32:25 GMT+0900 (한국 표준시)
+new Date(29 * 1000).toISOString(); // 1970-01-01T00:00:29.000Z
+new Date(seconds * 1000).toISOString().substring(11, 19); // 00:00:29
+
+// videoPlayer.js
+const formatTime = (seconds) =>
+    new Date(seconds * 1000).toISOString().substring(11, 19);
+
+const handleLoadedMetadata = (event) => {
+    // formatTime으로 덮어주기
+    totalTime.innerText = formatTime(Math.floor(video.duration));
+};
+
+const handleTimeUpdate = (event) => {
+    // formatTime으로 덮어주기
+    currentTime.innerText = formatTime(Math.floor(video.currentTime));
+};
+```
+
+-   타임라인에 따라 실제로 영상도 움직여보자
+
+```javascript
+// videoPlayer.js
+const handleTimelineChange = (event) => {
+    const {
+        target: { value },
+    } = event;
+    // video.currentTime: get or set 둘 다 가능
+    video.currentTime = value;
+};
+```
+
+-   #11.7 fullScreen에서 README 요약 일단 정지!
