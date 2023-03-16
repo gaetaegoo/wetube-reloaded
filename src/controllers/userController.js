@@ -321,10 +321,18 @@ export const postChangePassword = async (req, res) => {
     // return res.redirect("/login");
 };
 
-export const see = async (req, res) => {
+export const seeUser = async (req, res) => {
     const { id } = req.params;
     // populate 추가
-    const user = await User.findById(id).populate("videos");
+    const user = await User.findById(id).populate({
+        // 더블 populate
+        // path: 가장 먼저 가져 올 populate
+        path: "videos",
+        populate: {
+            path: "owner",
+            model: "User",
+        },
+    });
     if (!user) {
         return res.status(404).render("404", { pageTitle: "User not found." });
     }

@@ -3,7 +3,7 @@ import {
     getEdit,
     postEdit,
     logout,
-    see,
+    seeUser,
     startGithubLogin,
     finishGithubLogin,
     getChangePassword,
@@ -34,6 +34,6 @@ userRouter
 userRouter.get("/github/start", publicOnlyMiddleware, startGithubLogin);
 userRouter.get("/github/finish", publicOnlyMiddleware, finishGithubLogin);
 
-userRouter.get("/:id", see);
+userRouter.get("/:id", seeUser);
 
 export default userRouter;

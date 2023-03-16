@@ -1998,3 +1998,8 @@ output: {
 ```
 
 -   .gitignore에 '/assets' 반드시 추가
+
+<!-- Styles -->
+<!-- #10 STYLES 강의 참조 -->
+
+<!-- Video Player -->

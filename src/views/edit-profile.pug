@@ -2,18 +2,18 @@ extends base.pug
 
 block content
     //- "/"를 추가해줘서 절대경로 이미지로 바꿔주기
-    img(src="/" + loggedInUser.avatarUrl, width="100", height="100")
+    
     //- enctype 반드시 설정 해주기
-    form(method="POST", enctype="multipart/form-data")
+    form(method="POST", enctype="multipart/form-data").edit-profile__form
         label(for="avatar") Avatar
         input(name="avatar", type="file", id="avatar", accept="image/*")
         input(name="name", type="text", value=loggedInUser.name,  placeholder="Name", required)
         input(name="email", type="email", value=loggedInUser.email, placeholder="Email", required)
         input(name="username", type="text", value=loggedInUser.username, placeholder="Username", required)
         input(name="location", type="text", value=loggedInUser.location, placeholder="Location", required)
-        button Update Profile
+        input(type="submit", value="Update Profile")
         if !loggedInUser.socialOnly
-            hr
+            div.edit-profile__password
+                a(href="change-password") Change Password &rarr;
             //-  절대경로("/")가 아닌 상대경로
             //- a(href="/users/change-password") change Password &rarr;
-            a(href="change-password") change Password &rarr;

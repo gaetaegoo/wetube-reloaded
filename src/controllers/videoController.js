@@ -34,7 +34,9 @@ import User from "../models/User";
 // render 자체를 실행하는데에 있어서 return은 사실 없어도 됨
 // 하지만 render 후 function 자체를 종료하기 위해 return을 써줌
 export const home = async (req, res) => {
-    const videos = await Video.find({});
+    const videos = await Video.find({})
+        .sort({ createdAt: "desc" })
+        .populate("owner");
     return res.render("home", { pageTitle: "Home", videos });
     // render한 것은 다시 render할 수 없음: redirect(), sendStatus(), end() 등등 포함 (express에서 오류 발생)
     // callback(return이 있지만) 함수보다 먼저 실행 되어서 서버 종료
@@ -198,7 +200,7 @@ export const search = async (req, res) => {
             title: {
                 $regex: new RegExp(keyword, "i"),
             },
-        });
+        }).populate("owner");
     }
     return res.render("search", { pageTitle: "Search", videos });
 };
