@@ -2176,3 +2176,5 @@ const handleTimelineChange = (event) => {
 ```
 
 -   #11.7 fullScreen에서 README 요약 일단 정지!
+
+-   #11.7 ~ #13.5까지 깃 업로드로 대체

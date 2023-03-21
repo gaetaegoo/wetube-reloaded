@@ -67,6 +67,13 @@ app.use(
 // Middleware
 app.use(localsMiddleware);
 
+// Uncaught (in promise) ReferenceError: SharedArrayBuffer is not defined
+app.use((req, res, next) => {
+    res.header("Cross-Origin-Embedder-Policy", "require-corp");
+    res.header("Cross-Origin-Opener-Policy", "same-origin");
+    next();
+});
+
 // Router
 app.use("/", rootRouter);
 // static: express한테 안의 내용물을 볼 수 있게 해달라고 부탁
