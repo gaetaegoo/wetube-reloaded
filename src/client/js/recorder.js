@@ -26,14 +26,20 @@ const handleStop = (event) => {
 };
 
 const handleStart = (event) => {
+    /**
+     * 1. 버튼의 텍스트 부분을 바꿈(Start Recoding -> Stop Recoding)
+     * 2. EventListener를 제거(Stop Recoding 유지)
+     * 3. 새로운 EventListener를 추가(Download Recoding 시작)
+     * 4.
+     */
     startBtn.innerText = "Stop Recording";
     startBtn.removeEventListener("click", handleStart);
     startBtn.addEventListener("click", handleStop);
 
     // MediaRecorder: 비디오 녹화 코드
     // recorder = new MediaRecorder(stream, { mimeType: "video/mp4" });
-    recorder = new MediaRecorder(stream);
-    // ondataavailable: BlobEvent
+    recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+    // ondataavailable: BlobEvent, 비디오가 멈추면 발생되는 event
     recorder.ondataavailable = (event) => {
         // console.log("recoding done");
         // console.log(event);
