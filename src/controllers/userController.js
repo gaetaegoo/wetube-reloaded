@@ -191,7 +191,15 @@ export const finishGithubLogin = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-    req.session.destroy();
+    // req.session.destroy();
+
+    // flash를 위한(no destroy)
+    // flash는 session을 필요로 하기 때문에 destroy하면 로그아웃 후에 못 씀
+    req.session.user = null;
+    res.locals.loggedInUser = req.session.user;
+    req.session.loggedIn = false;
+
+    req.flash("info", "Bye Bye.");
     return res.redirect("/");
 };
 export const getEdit = (req, res) => {
@@ -218,6 +226,7 @@ export const postEdit = async (req, res) => {
     // 위 session으로 넣어버리고 생략
     // const { name, email, username, location } = req.body;
 
+    // 갑자기 편집 안 되면 findById로 바꾸자(중괄호 없애야 함)
     const exists = await User.exists({
         // Not Equals(특정 필드 값과 일치하지 않는 모든 데이타)
         _id: { $ne: { _id } },
@@ -254,8 +263,9 @@ export const postEdit = async (req, res) => {
 };
 
 export const getChangePassword = (req, res) => {
-    // GitHub 사용자는 홈으로 되돌리기
+    // GitHub 사용자는 홈로 되돌리기
     if (req.session.user.socialOnly === true) {
+        req.flash("error", "Can't change password.");
         return res.redirect("/");
     }
     return res.render("users/change-password", {
@@ -312,6 +322,8 @@ export const postChangePassword = async (req, res) => {
 
     // 새로운 비밀번호 hash 작업 거치기(pre("Save", async function()))
     await user.save();
+
+    req.flash("info", "Password updated.");
 
     // 비밀번호 변경 후 로그아웃 처리
     return res.redirect("/users/logout");

@@ -82,6 +82,7 @@ export const getEdit = async (req, res) => {
     // JS에선 생김새 + 데이터타입까지 비교(owner는 object, _id는 string)
     // console.log(typeof video.owner, typeof _id);
     if (String(video.owner) !== String(_id)) {
+        req.flash("error", "You are not the owner of the video.");
         return res.status(403).redirect("/");
     }
     return res.render("edit", { pageTitle: `Edit ${video.title}`, video });
@@ -116,6 +117,7 @@ export const postEdit = async (req, res) => {
     //     .split(",")
     //     .map((word) => (word.startsWith("#") ? word : `#${word}`));
     // await video.save();
+    req.flash("success", "Changes saved.");
     return res.redirect(`/videos/${id}`);
 };
 
@@ -143,7 +145,7 @@ export const postUpload = async (req, res) => {
     try {
         // const video = new Video({})
         // db에 파일이 저장되는 것을 기다릴 수 있게함
-        // await video.save();
+        // await video.save();info
 
         // newVideo로 변수화
         const newVideo = await Video.create({

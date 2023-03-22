@@ -1,0 +1,4 @@
+//- 괄호 안에 두 가지가 들어감, 하나는 메시지의 종류(kind), 다른 하나는 내용(text)
+mixin message(kind, text)
+    div.message(class=kind)
+        span=text

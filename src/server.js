@@ -3,6 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import flash from "express-flash";
 
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
@@ -66,6 +67,9 @@ app.use(
 
 // Middleware
 app.use(localsMiddleware);
+
+// express-flash
+app.use(flash());
 
 // Uncaught (in promise) ReferenceError: SharedArrayBuffer is not defined
 app.use((req, res, next) => {

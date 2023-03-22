@@ -2178,3 +2178,13 @@ const handleTimelineChange = (event) => {
 -   #11.7 fullScreen에서 README 요약 일단 정지!
 
 -   #11.7 ~ #13.5까지 깃 업로드로 대체
+
+<!-- Flash Messages  -->
+
+74. npm i express-flash: 템플릿에서 사용자에게 메시지를 남길 수 있게 하는 미들웨어
+
+```javascript
+// flash message가 필요한 곳이라면 어디든 사용
+req.flash("error", "Not authorized");
+req.flash("info", "Password updated");
+```
