@@ -9,7 +9,9 @@ form {
     }
 }
 
-input:not(input[type="range"]) {
+input:not(input[type="range"]),
+// 새로 추가
+input[type="submit"] {
     all: unset;
     width: 90%;
     padding: 15px 20px;
@@ -28,9 +30,22 @@ input[type="submit"],
 .social__btn {
     display: block;
     padding: 12px 20px;
-    background-color: white;
-    color: rgba($color: $red, $alpha: 1);
-    text-align: center;
+
+    // 새로 추가
+    background-color: white !important;
+    color: rgba($color: $red, $alpha: 1) !important;
+    text-align: center !important;
+
     border-radius: 5px;
     cursor: pointer;
+
+    // 새로 추가
+    border: none;
+    &:focus {
+        outline: none;
+    }
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 }

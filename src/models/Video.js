@@ -15,7 +15,8 @@ const videoSchema = new mongoose.Schema({
     //- form 부분과 error를 막기 위해 양쪽 동시에 max, minLength를 설정
     title: { type: String, trim: true, maxLength: 80, required: true },
     fileUrl: { type: String, require: true },
-    description: { type: String, trim: true, minLength: 20, required: true },
+    thumbUrl: { type: String, require: true },
+    description: { type: String, trim: true, minLength: 10, required: true },
     // default: Date.now에서 '()'를 하지 않는 이유: 여기서 실행시키지 않기 위해
     createdAt: { type: Date, default: Date.now, required: true },
     hashtags: [{ type: String, trim: true }],

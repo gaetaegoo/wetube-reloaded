@@ -130,9 +130,13 @@ export const postUpload = async (req, res) => {
         user: { _id },
     } = req.session;
 
+    // console.log(req.files);
+    // console.log(video, thumb);
+
     // multer는 req.file을 제공해 줌(그 안에는 path가 존재)
     // 코드 리팩토링: const { path } = req.file;
-    const { path: fileUrl } = req.file;
+    // single -> filed로 바뀌어서, file -> files
+    const { video, thumb } = req.files;
 
     // hashtags.split(",").map((word) => `#${word}`);
     const { title, description, hashtags } = req.body;
@@ -146,7 +150,8 @@ export const postUpload = async (req, res) => {
             title,
             description,
             // multer는 req.file을 제공해 줌(그 안에는 path가 존재)
-            fileUrl,
+            fileUrl: video[0].path,
+            thumbUrl: thumb[0].path.replace(/[\\]/g, "/"),
             // 업로드 될 영상의 id를 user model에도 저장 해줘야 함
             owner: _id,
             // 이렇게 일일이 복붙 하는 법은 구리다 => 적절한 방법을 찾자!
