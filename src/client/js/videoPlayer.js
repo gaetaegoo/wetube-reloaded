@@ -11,6 +11,7 @@ const fullScreenBtn = document.getElementById("fullScreen");
 const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
+const textarea = document.getElementById("textarea");
 
 // watch.pug에서 보낸 'div#videoContainer(data-id=video._id)'의 id 정보
 // console.log(videoContainer.dataset);
@@ -222,26 +223,32 @@ const handleEnded = (event) => {
 };
 
 // Space로 재생 및 일시정지
-const handlePlaySpace = (event) => {
-    if (event.code === "Space") {
+const handlePlaySpace2 = (event) => {
+    if (event.code === "Space" && event.target.id !== textarea) {
         handlePlayClick();
-        event.preventDefault();
+    }
+    event.preventDefault();
+};
+
+const handlePlaySpace = (event) => {
+    if (event.target !== textarea && event.code == "Space") {
+        handlePlayClick();
     }
 };
 
 // 키보드 방향키로 타임라인 Skip
 const handleSkipArrow = (event) => {
-    if (event.code === "ArrowRight") {
+    if (event.target !== textarea && event.code === "ArrowRight") {
         video.currentTime += 5;
     }
-    if (event.code === "ArrowLeft") {
+    if (event.target !== textarea && event.code === "ArrowLeft") {
         video.currentTime -= 5;
     }
 };
 
 // 키보드 m버튼으로 뮤트
 const handleMuteKeyM = (event) => {
-    if (event.code === "KeyM") {
+    if (event.target !== textarea && event.code === "KeyM") {
         handleMuteClick();
     }
 };

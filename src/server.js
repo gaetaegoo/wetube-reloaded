@@ -19,8 +19,10 @@ const logger = morgan("dev");
 app.use(logger);
 
 // HTML -> javascript object
-// req.body 생성
+// req.body로부터 오는 data를 이해할 수 있게 도움
 app.use(express.urlencoded({ extended: true }));
+// json도 body로부터 받아오자
+app.use(express.json());
 
 // View(pug)
 app.set("view engine", "pug");

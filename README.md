@@ -2188,3 +2188,26 @@ const handleTimelineChange = (event) => {
 req.flash("error", "Not authorized");
 req.flash("info", "Password updated");
 ```
+
+<!-- Comment -->
+
+75. Comment 만드는 과정
+    1. 모델 만들기
+    2. init.js에서 import
+    3. front-end 만들기 위한 과정
+        1. webpack에 넣어주기(commentSection)
+        2. template에 넣어주기(watch.pug -> scripts)
+        3. watch.pug에서 html 만들기
+    4. JS코드 짜기
+        1. commentSection에서 event func 만들기
+        2. back-end에 req 보내기(apiRouter에 comment 추가)
+        3. videoController에 가서 comment func 작성
+        4. server.js에서 'app.use(express.json());' 추가
+    5. DB에 댓글 추가하기 - videoController.js에서 func 작성
+        1. create -> push -> save
+        2. watch func에 populate("comments")를 해주고,
+           createComment func에서 새로운 댓글의 id를 직접 넣어주기
+    6. template에서 댓글 뿌려주기
+
+-   backend로 보내는 모든 req는(fetch) 쿠키와 함께 옴
+-   그 쿠키를 videoController에서 우리가 쓸 수 있음

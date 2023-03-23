@@ -195,13 +195,14 @@ export const logout = (req, res) => {
 
     // flash를 위한(no destroy)
     // flash는 session을 필요로 하기 때문에 destroy하면 로그아웃 후에 못 씀
-    req.session.user = null;
-    res.locals.loggedInUser = req.session.user;
+    // req.session.user = null;
+    // res.locals.loggedInUser = req.session.user;
     req.session.loggedIn = false;
 
     req.flash("info", "Bye Bye.");
     return res.redirect("/");
 };
+
 export const getEdit = (req, res) => {
     return res.render("edit-profile", {
         pageTitle: "Edit Profile",

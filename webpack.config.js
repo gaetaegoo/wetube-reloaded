@@ -1,6 +1,8 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 
+const BASE_JS = "./src/client/js/";
+
 // resolve(): 경로를 만들어 줌
 // console.log(path.resolve(__dirname, "assets", "js"));
 
@@ -10,9 +12,10 @@ const path = require("path");
 module.exports = {
     entry: {
         // 여러개의 entry 생성
-        main: "./src/client/js/main.js",
-        videoPlayer: "./src/client/js/videoPlayer.js",
-        recorder: "./src/client/js/recorder.js",
+        main: `${BASE_JS}main.js`,
+        videoPlayer: `${BASE_JS}videoPlayer.js`,
+        recorder: `${BASE_JS}recorder.js`,
+        commentSection: `${BASE_JS}commentSection.js`,
     },
     mode: "development",
     watch: true,

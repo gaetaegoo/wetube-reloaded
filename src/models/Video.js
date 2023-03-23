@@ -23,6 +23,13 @@ const videoSchema = new mongoose.Schema({
     meta: {
         views: { type: Number, default: 0, required: true },
     },
+    comments: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Comment",
+            required: true,
+        },
+    ],
     // ObjectId는 X(JS에서 제공하지 않음)
     // ref: mongoose에게 owner에 id를 저장하겠다고 알려줘야 함
     owner: {

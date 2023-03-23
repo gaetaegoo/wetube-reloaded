@@ -1,6 +1,6 @@
-import { registerView } from "../controllers/videoController";
+import { registerView, createComment } from "../controllers/videoController";
 
-/*
+/**
  * 요즘은 백엔드(서버)에서 템플릿까지 처리하지 않음
  * 보통 VanillaJS, React, svelte등을 써서 처리함
  * 하지만 우리는 이번 강의에서 백엔드를 통해 처리하는 중\
@@ -22,5 +22,6 @@ const apiRouter = express.Router();
 
 // form을 사용하지 않고 만든 첫 번째 post 요청
 apiRouter.post("/videos/:id([0-9a-f]{24})/view", registerView);
+apiRouter.post("/videos/:id([0-9a-f]{24})/comment", createComment);
 
 export default apiRouter;

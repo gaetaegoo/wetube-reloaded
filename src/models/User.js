@@ -18,6 +18,13 @@ const userSchema = new mongoose.Schema({
             // required: true,
         },
     ],
+    comments: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Comment",
+            required: true,
+        },
+    ],
 });
 
 // password hashing

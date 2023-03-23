@@ -1,5 +1,6 @@
 import Video from "../models/Video";
 import User from "../models/User";
+import Comment from "../models/Comment";
 
 // export const home = (req, res) => {
 //     // {}: search terms가 비어 있으면 모든 형식을 찾는 의미
@@ -59,10 +60,12 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
     const { id } = req.params;
     // 아래 주석 부분 코드를 .populate("owner");로 마무리
-    const video = await Video.findById(id).populate("owner");
+    const video = await Video.findById(id)
+        .populate("owner")
+        .populate("comments");
     // 영상 올린 사람 이름을 watch.pug에 표현하려는 변수
     // const owner = await User.findById(video.owner);
-    // console.log(video);
+    console.log(video);
     if (!video) {
         return res.render("404", { pageTitle: "Video not found." });
     }
@@ -225,4 +228,55 @@ export const registerView = async (req, res) => {
     video.meta.views = video.meta.views + 1;
     await video.save();
     return res.sendStatus(200);
+};
+
+export const createComment = async (req, res) => {
+    // 비디오에 달린 댓글 DB에 저장
+    const {
+        session: { user },
+        params: { id },
+        body: { text },
+    } = req;
+
+    const video = await Video.findById(id);
+
+    if (!video) {
+        return res.sendStatus(404);
+    }
+
+    const comment = await Comment.create({
+        owner: user._id,
+        video: id,
+        text,
+    });
+
+    video.comments.push(comment);
+    video.save();
+
+    // console.log(user, text, id);
+
+    // console.log(req.params);
+    // console.log(req.body);
+    // console.log(req.session.user);
+
+    // 201: Created
+
+    // User가 작성한 댓글 DB에 저장
+    const foundUser = await User.findById(user._id).populate("comments");
+
+    if (!foundUser) {
+        return res.sendStatus(404);
+    }
+
+    const createdComment = await Comment.create({
+        owner: foundUser._id,
+        video: id,
+        text,
+    });
+    foundUser.comments.push(createdComment);
+    foundUser.save();
+
+    // 새로운 댓글에 id를 보내주기 위해 json 사용(f12 -> network -> response에서 확인)
+    // JSON response를 보냅니다. 이 메서드는 JSON.stringify()를 사용하여 JSON 문자열로 변환된 매개변수인 response를 보냅니다.
+    return res.status(201).json({ newCommentId: comment._id });
 };

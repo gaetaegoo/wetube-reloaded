@@ -22,6 +22,32 @@ block content
                 span#fullScreen
                     i.fas.fa-expand
 
+    div.video__data
+        p.video__title=video.title
+        small.video__owner Uploaded by 
+            a(href=`/users/${video.owner._id}`)=video.owner.name
+        small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+        br
+        //- 각자의 id의 형태(object와 string)가 다르기 때문에 String으로 변환
+        if String(video.owner._id) === String(loggedInUser._id)
+            a(href=`${video.id}/edit`) Edit Video &rarr;
+            a(href=`${video.id}/delete`) Delete Video &rarr;
+
+    //- 옵션1: 그대로 두고, 로그인 했을 때만 script 불러오기(스크립트에 if 사용)
+    //- 옵션2: form.querySelector 변수를 event function 안에 두기
+    if loggedIn
+        div.video__add-comments
+            form.video__comment-form#commentForm
+                textarea#textarea(cols="30", rows="10", placeholder="Write a comment..")
+                button Add Comment
+    div.video__comments
+        ul 
+            //- reverse로 최신 댓글부터 나오게 수정
+            each comment in video.comments.reverse()
+                li.video__comment
+                    i.fas.fa-comment
+                    span #{comment.text}
+
     //- div#videoContainer
     //-     //- controls 옵션 해제
     //-     video(src="/" + video.fileUrl)
@@ -40,21 +66,8 @@ block content
     //-         div 
     //-             button#fullScreen Enter Full Screen
 
-    //- h3 #{video.views} #{video.views === 1 ? "view" : "views"}
-    //- '//': 다른 사람에게 보여지는 코멘트, '//-': 접근 권한이 있는 사람에게만 보여짐
-        div
-            p=video.description
-            small=video.createdAt
-        div 
-            small Uploaded by 
-                a(href=`/users/${video.owner._id}`)=video.owner.name
-        hr
-        //- video.owner의 id는 object인데, loggedInUser._id는 string
-        if String(video.owner._id) === String(loggedInUser._id)
-            a(href=`${video.id}/edit`) Edit Video &rarr;
-            br
-            a(href=`${video.id}/delete`) Delete Video &rarr;
-
 block scripts
     //- static인 이유는 우리 서버에 등록한 이름이라서
     script(src="/static/js/videoPlayer.js")
+    if loggedIn
+        script(src="/static/js/commentSection.js")
