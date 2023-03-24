@@ -238,6 +238,8 @@ export const createComment = async (req, res) => {
         body: { text },
     } = req;
 
+    // console.log(req.params.id);
+
     const video = await Video.findById(id);
 
     if (!video) {
@@ -279,4 +281,21 @@ export const createComment = async (req, res) => {
     // 새로운 댓글에 id를 보내주기 위해 json 사용(f12 -> network -> response에서 확인)
     // JSON response를 보냅니다. 이 메서드는 JSON.stringify()를 사용하여 JSON 문자열로 변환된 매개변수인 response를 보냅니다.
     return res.status(201).json({ newCommentId: comment._id });
+};
+
+export const deleteComment = async (req, res) => {
+    const { videoId, commentId } = req.body;
+    const { _id } = req.session.user;
+    const video = await Video.findById(videoId);
+    const { owner } = await Comment.findById(commentId);
+
+    if (String(owner) !== _id) {
+        return res.sendStatus(403);
+    }
+
+    await Comment.findByIdAndDelete(commentId);
+    video.comments.splice(video.comments.indexOf(videoId), 1);
+
+    video.save();
+    return res.sendStatus(200);
 };

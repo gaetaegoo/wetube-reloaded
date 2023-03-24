@@ -1,15 +1,16 @@
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
 const textarea = form.querySelector("textarea");
+const deleteCommentBtn = document.querySelectorAll("#deleteCommentBtn");
 
 // pug와 똑같이 만드는 fake comment
-const addComment = (text, id) => {
+const addComment = (text, commentId) => {
     // 기존 댓글 + 신규 댓글(아이콘까지)
     const videoComments = document.querySelector(".video__comments ul");
 
     const newComment = document.createElement("li");
     // backend의 json이 넘겨준 새로운 댓글 id를 여기에 써주자
-    newComment.dataset.id = id;
+    newComment.dataset.commentId = commentId;
     newComment.className = "video__comment";
 
     const icon = document.createElement("i");
@@ -21,6 +22,10 @@ const addComment = (text, id) => {
     // 이 부분은 항상 보여줘도 됨 -> 내가 이 댓글의 작성자이기 때문
     const span2 = document.createElement("span");
     span2.innerText = "❌";
+    span2.dataset.commentId = commentId;
+    span2.dataset.videoId = videoContainer.dataset.id;
+    span2.id = "newDeleteCommentBtn";
+    span2.className = "video__comment-delete";
 
     // appendChild: element를 다른 것 안에 넣는 방법(요소를 맨 뒤에 추가함)
     newComment.appendChild(icon);
@@ -29,6 +34,9 @@ const addComment = (text, id) => {
 
     // prepend: appendChild와 다르게 element 요소를 맨 위에 추가함
     videoComments.prepend(newComment);
+
+    const newDeleteCommentBtn = document.querySelector("#newDeleteCommentBtn");
+    newDeleteCommentBtn.addEventListener("click", handleClickDelete);
 };
 
 /**
@@ -88,5 +96,25 @@ const handleSubmit = async (event) => {
     // window.location.reload();
 };
 
+const handleClickDelete = async (event) => {
+    const { videoId, commentId } = event.target.dataset;
+    const response = await fetch(
+        `/api/videos/${videoId}/comments/${commentId}/delete`,
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ videoId, commentId }),
+        }
+    );
+    if (response.status === 200) {
+        event.target.parentNode.remove();
+    }
+};
+
 // btn의 click으로 감지하는 것이 아님
 form.addEventListener("submit", handleSubmit);
+deleteCommentBtn.forEach((btn) =>
+    btn.addEventListener("click", handleClickDelete)
+);
