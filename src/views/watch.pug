@@ -48,7 +48,7 @@ block content
                     i.fas.fa-comment
                     span #{comment.text}
                     if String(comment.owner) === String(loggedInUser._id) 
-                        span#deleteCommentBtn.video__comment-delete(data-commentId=comment._id)(data-videoId=video._id) ❌
+                        span#deleteCommentBtn.video__comment-delete(data-id=comment._id) ❌
 
     //- div#videoContainer
     //-     //- controls 옵션 해제

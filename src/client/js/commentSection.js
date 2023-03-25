@@ -10,7 +10,7 @@ const addComment = (text, commentId) => {
 
     const newComment = document.createElement("li");
     // backend의 json이 넘겨준 새로운 댓글 id를 여기에 써주자
-    newComment.dataset.commentId = commentId;
+    // newComment.dataset.commentId = commentId;
     newComment.className = "video__comment";
 
     const icon = document.createElement("i");
@@ -22,8 +22,12 @@ const addComment = (text, commentId) => {
     // 이 부분은 항상 보여줘도 됨 -> 내가 이 댓글의 작성자이기 때문
     const span2 = document.createElement("span");
     span2.innerText = "❌";
-    span2.dataset.commentId = commentId;
+    span2.dataset.id = commentId;
     span2.dataset.videoId = videoContainer.dataset.id;
+
+    console.log("comment new: ", span2.dataset.id);
+    console.log("video new: ", span2.dataset.videoId);
+
     span2.id = "newDeleteCommentBtn";
     span2.className = "video__comment-delete";
 
@@ -97,15 +101,20 @@ const handleSubmit = async (event) => {
 };
 
 const handleClickDelete = async (event) => {
-    const { videoId, commentId } = event.target.dataset;
+    const videoId = videoContainer.dataset.id;
+    const { id } = event.target.dataset;
+
+    console.log("comment old: ", id);
+    console.log("video old: ", videoId);
+
     const response = await fetch(
-        `/api/videos/${videoId}/comments/${commentId}/delete`,
+        `/api/videos/${videoId}/comments/${id}/delete`,
         {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ videoId, commentId }),
+            body: JSON.stringify({ videoId, id }),
         }
     );
     if (response.status === 200) {
@@ -115,6 +124,8 @@ const handleClickDelete = async (event) => {
 
 // btn의 click으로 감지하는 것이 아님
 form.addEventListener("submit", handleSubmit);
-deleteCommentBtn.forEach((btn) =>
-    btn.addEventListener("click", handleClickDelete)
-);
+
+if (deleteCommentBtn)
+    deleteCommentBtn.forEach((btn) =>
+        btn.addEventListener("click", handleClickDelete)
+    );

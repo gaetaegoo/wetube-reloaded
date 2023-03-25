@@ -2211,3 +2211,17 @@ req.flash("info", "Password updated");
 
 -   backend로 보내는 모든 req는(fetch) 쿠키와 함께 옴
 -   그 쿠키를 videoController에서 우리가 쓸 수 있음
+
+<!-- 배포 -->
+
+76. 배포
+
+    1. Heroku를 통해 배포
+    2. 어떤 node.js 환경에서도 서버가 실행될 수 있게 설정
+    3. DB도 설정도 바꾸기 -> 진짜 real DB
+    4. 파일들을 우리 서버가 아니라 아마존에 올려야 함
+    5. 코드를 production 방법으로 빌드 + 코드를 압축(minify)
+
+    6. babel-node는 코드를 바꾸지 않고 우리 코드를 실행시켜 줌
+       -> 그러나! performance 문제가 있음(그렇게 빠르지 않음)
+       -> 그래서 babel CLI가 필요(npm i --save-dev @babel/core @babel/cli)

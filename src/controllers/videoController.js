@@ -284,18 +284,29 @@ export const createComment = async (req, res) => {
 };
 
 export const deleteComment = async (req, res) => {
-    const { videoId, commentId } = req.body;
+    const { videoId, id } = req.body;
     const { _id } = req.session.user;
     const video = await Video.findById(videoId);
-    const { owner } = await Comment.findById(commentId);
+    const { owner } = await Comment.findById(id);
 
     if (String(owner) !== _id) {
         return res.sendStatus(403);
     }
-
-    await Comment.findByIdAndDelete(commentId);
+    // 특별한 이유가 없다면 remove 대신 delete 사용
+    await Comment.findByIdAndDelete(id);
+    /**
+     * slice(): 배열로부터 특정 범위를 복사한 값들을 담고 있는 새로운 배열을 만드는데 사용(원본 배열 보존)
+     *        : 첫 번째 인자 - 시작 인덱스(가리키는 값 포함), 두 번째 인자 - 종료 인덱스(가리키는 값 미포함)
+     *          -> 시작부터 종료까지 인덱스 값을 복사하여 반환
+     *
+     * splice(): 원본 배열로부터 특정 범위를 삭제 및 새로운 값을 추가하는데 사용
+     *         : 첫 번째 인자 - 시작 인덱스, 두 번째 인자 - 몇 개 의 값을 삭제할지, 세 번째 인자 - 추가할 값을 가변 인자로
+     *
+     * indexOf(): 객체 내에서 주어진 값과 일치하는 첫 번째 인덱스를 반환, 일치값이 없다면 -1 반환
+     */
     video.comments.splice(video.comments.indexOf(videoId), 1);
 
     video.save();
+
     return res.sendStatus(200);
 };
