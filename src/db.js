@@ -5,7 +5,7 @@ mongoose.set("strictQuery", true);
 // url 뒤에 db(wetube)명 적어주기
 mongoose.connect(process.env.DB_URL);
 
-const handleOpen = () => console.log("✅ Sucsess! Connected to DB 💾");
+const handleOpen = () => console.log("✅ Success! Connected to DB 💾");
 // error는 mongoose에서 받아옴
 const handleError = (error) => console.log("❌ DB Error", error);
 
