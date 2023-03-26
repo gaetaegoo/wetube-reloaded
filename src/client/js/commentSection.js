@@ -25,8 +25,8 @@ const addComment = (text, commentId) => {
     span2.dataset.id = commentId;
     span2.dataset.videoId = videoContainer.dataset.id;
 
-    console.log("comment new: ", span2.dataset.id);
-    console.log("video new: ", span2.dataset.videoId);
+    // console.log("comment new: ", span2.dataset.id);
+    // console.log("video new: ", span2.dataset.videoId);
 
     span2.id = "newDeleteCommentBtn";
     span2.className = "video__comment-delete";
@@ -104,8 +104,8 @@ const handleClickDelete = async (event) => {
     const videoId = videoContainer.dataset.id;
     const { id } = event.target.dataset;
 
-    console.log("comment old: ", id);
-    console.log("video old: ", videoId);
+    // console.log("comment old: ", id);
+    // console.log("video old: ", videoId);
 
     const response = await fetch(
         `/api/videos/${videoId}/comments/${id}/delete`,
@@ -117,6 +117,7 @@ const handleClickDelete = async (event) => {
             body: JSON.stringify({ videoId, id }),
         }
     );
+
     if (response.status === 200) {
         event.target.parentNode.remove();
     }

@@ -224,10 +224,10 @@ const handleEnded = (event) => {
 
 // Space로 재생 및 일시정지
 const handlePlaySpace2 = (event) => {
+    event.preventDefault();
     if (event.code === "Space" && event.target.id !== textarea) {
         handlePlayClick();
     }
-    event.preventDefault();
 };
 
 const handlePlaySpace = (event) => {

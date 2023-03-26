@@ -26,6 +26,7 @@ app.use(express.json());
 
 // View(pug)
 app.set("view engine", "pug");
+// cwd: current working directory
 app.set("views", process.cwd() + "/src/views");
 
 // session(before Routers)

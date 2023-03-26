@@ -2217,11 +2217,27 @@ req.flash("info", "Password updated");
 76. 배포
 
     1. Heroku를 통해 배포
+       -> 서버를 아주 빠르게 배포 가능
     2. 어떤 node.js 환경에서도 서버가 실행될 수 있게 설정
-    3. DB도 설정도 바꾸기 -> 진짜 real DB
-    4. 파일들을 우리 서버가 아니라 아마존에 올려야 함
-    5. 코드를 production 방법으로 빌드 + 코드를 압축(minify)
+    3. DB도 설정도 바꾸기 -> 진라 아마존에 올려야 함
+    4. 코드를 production 방법으로짜 real DB
+    5. 파일들을 우리 서버가 아니 빌드 + 코드를 압축(minify)
 
     6. babel-node는 코드를 바꾸지 않고 우리 코드를 실행시켜 줌
        -> 그러나! performance 문제가 있음(그렇게 빠르지 않음)
        -> 그래서 babel CLI가 필요(npm i --save-dev @babel/core @babel/cli)
+       -> .gitignore에 build폴더 추가
+
+```javascript
+// babel이 src 폴더를 빌드하고, 경과물은 build 폴더에 저장
+"build:server": "babel src -d build",
+
+// 모드를 production 모드로 실행
+"build:assets": "webpack --mode=production",
+
+// 모드를 development로 실행하고, watch(실시간 변경) 설정
+"dev:assets": "webpack --mode=development --watch"
+
+// build 모드 두 가지를 하나로 묶기
+"build": "npm run build:server && npm run build:assets",
+```

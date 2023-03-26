@@ -4,3 +4,7 @@
 /uploads
 /assets
 .vscode
+/build
+.dockerignore
+Dockerfile
+fly.toml

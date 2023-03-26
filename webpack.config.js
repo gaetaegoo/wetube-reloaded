@@ -17,8 +17,10 @@ module.exports = {
         recorder: `${BASE_JS}recorder.js`,
         commentSection: `${BASE_JS}commentSection.js`,
     },
-    mode: "development",
-    watch: true,
+    // development 모드: 개발시,
+    // production 모드: 배포시 사용, 코드가 훨씬 작음(압축)
+    // mode: "development", => package.json에서 실행명령어로 쓰자
+    // watch: true, => production 모드에서는 watch가 비활성화 되어야 함
     plugins: [
         new MiniCssExtractPlugin({
             filename: "css/styles.css",

@@ -65,7 +65,6 @@ export const watch = async (req, res) => {
         .populate("comments");
     // 영상 올린 사람 이름을 watch.pug에 표현하려는 변수
     // const owner = await User.findById(video.owner);
-    console.log(video);
     if (!video) {
         return res.render("404", { pageTitle: "Video not found." });
     }
