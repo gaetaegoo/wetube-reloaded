@@ -4,7 +4,7 @@ block content
     //- data attribute(data-id=video._id):
     //- HTML에 정보를 저장하여, 프론트의 JS가 사용할 수 있게 도와줌(조회수 확인 용도)
     div#videoContainer(data-id=video._id)
-        video(src="/" + video.fileUrl)
+        video(src=video.fileUrl)
         div#videoControls.videoControls
             div.videoControls__play
                 span#play.videoControls__playBtn
@@ -25,7 +25,7 @@ block content
     div.video__data
         p.video__title=video.title
         small.video__owner Uploaded by 
-            a(href=`/users/${video.owner._id}`)=video.owner.name
+            a(href=`/users/${video.owner._id}`)=video.owner.username
         small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
         br
         //- 각자의 id의 형태(object와 string)가 다르기 때문에 String으로 변환

@@ -223,14 +223,8 @@ const handleEnded = (event) => {
 };
 
 // Space로 재생 및 일시정지
-const handlePlaySpace2 = (event) => {
-    event.preventDefault();
-    if (event.code === "Space" && event.target.id !== textarea) {
-        handlePlayClick();
-    }
-};
-
 const handlePlaySpace = (event) => {
+    event.preventDefault();
     if (event.target !== textarea && event.code == "Space") {
         handlePlayClick();
     }

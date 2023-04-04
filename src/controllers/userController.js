@@ -6,7 +6,7 @@ import fetch from "node-fetch";
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 
 export const postJoin = async (req, res) => {
-    const { name, email, username, password, password2, location } = req.body;
+    const { email, username, password, password2, location } = req.body;
     const pageTitle = "Join";
 
     // const usernameExists = await User.exists({ username });
@@ -44,7 +44,6 @@ export const postJoin = async (req, res) => {
 
     try {
         await User.create({
-            name,
             email,
             username,
             password,
@@ -65,20 +64,20 @@ export const getLogin = (req, res) => {
 };
 
 export const postLogin = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     const pageTitle = "Login";
     // 어차피 username을 계속 찾으니까 exists를 삭제
     // const exists = await User.exists({ username });
-    const user = await User.findOne({ username, socialOnly: false });
+    const user = await User.findOne({ email, socialOnly: false });
     if (!user) {
         return res.status(400).render("login", {
             pageTitle,
-            errorMessage: "An account with this username does not exists.",
+            errorMessage: "This email does not exists.",
         });
     }
     // bcrypt.compare(유저가 적는 암호, db에 저장된 암호)
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) {
+    const passwordOk = await bcrypt.compare(password, user.password);
+    if (!passwordOk) {
         return res.status(400).render("login", {
             pageTitle,
             errorMessage: "Wrong password",
@@ -156,9 +155,6 @@ export const finishGithubLogin = async (req, res) => {
             })
         ).json();
 
-        console.log(
-            "---------------------------------------------------------"
-        );
         // console.log(emailData);
 
         // email 객체에서 양 조건을 만족하는 email 찾기
@@ -217,7 +213,7 @@ export const postEdit = async (req, res) => {
             // db상에는 id가 아니라 _id로 저장
             user: { _id, avatarUrl },
         },
-        body: { name, email, username, location },
+        body: { email, username, location },
         // 파일이 존재하지 않으면 사용할 수 없음
         // file: {path},
         file,
@@ -241,16 +237,20 @@ export const postEdit = async (req, res) => {
         });
     }
 
+    // S3와 로컬uploader를 분리하여 업로드
+    const isFlyio = process.env.NODE_ENV === "production";
+
     const updatedUser = await User.findByIdAndUpdate(
         _id,
         {
-            name,
             email,
             username,
             location,
             // 파일이 존재한다면(input으로 업로드를 했다면) file.path /
             // 파일이 존재 X라면(업로드를 안 했다면) avatarUrl
-            avatarUrl: file ? file.path : avatarUrl,
+            // S3와 로컬uploader를 분리하여 업로드
+            avatarUrl: file ? (isFlyio ? file.location : file.path) : avatarUrl,
+            // file.path -> file.location(AWS S3)
             // 파일이 존재하지 않으면 사용할 수 없음
             // avatarUrl: path,
         },
@@ -350,7 +350,7 @@ export const seeUser = async (req, res) => {
         return res.status(404).render("404", { pageTitle: "User not found." });
     }
     return res.render("users/profile", {
-        pageTitle: user.name,
+        pageTitle: user.username,
         user,
     });
 };
@@ -365,7 +365,7 @@ export const see2 = async (req, res) => {
     const videos = await Video.find({ owner: user._id });
     // console.log(videos);
     return res.render("users/profile", {
-        pageTitle: user.name,
+        pageTitle: user.username,
         user,
         videos,
     });

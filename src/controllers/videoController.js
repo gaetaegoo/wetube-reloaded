@@ -97,7 +97,9 @@ export const postEdit = async (req, res) => {
     const { id } = req.params;
     const { title, description, hashtags } = req.body;
     // video 오브젝트 전체를 찾지 말고, id가 true인지 false인지만 체크하자(post에서만)
-    const video = await Video.exists({ _id: id });
+    // const video = await Video.exists({ _id: id });
+    const video = await Video.findById(id);
+
     if (!video) {
         return res.status(404).render("404", { pageTitle: "Video not found." });
     }
@@ -145,6 +147,7 @@ export const postUpload = async (req, res) => {
 
     // hashtags.split(",").map((word) => `#${word}`);
     const { title, description, hashtags } = req.body;
+    const isFlyio = process.env.NODE_ENV === "production";
     try {
         // const video = new Video({})
         // db에 파일이 저장되는 것을 기다릴 수 있게함
@@ -155,8 +158,10 @@ export const postUpload = async (req, res) => {
             title,
             description,
             // multer는 req.file을 제공해 줌(그 안에는 path가 존재)
-            fileUrl: video[0].path,
-            thumbUrl: thumb[0].path.replace(/[\\]/g, "/"),
+            fileUrl: isFlyio ? video[0].location : video[0].path,
+            thumbUrl: isFlyio
+                ? thumb[0].location.replace(/[\\]/g, "/")
+                : video[0].path.replace(/[\\]/g, "/"),
             // 업로드 될 영상의 id를 user model에도 저장 해줘야 함
             owner: _id,
             // 이렇게 일일이 복붙 하는 법은 구리다 => 적절한 방법을 찾자!

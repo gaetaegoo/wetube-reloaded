@@ -4,12 +4,12 @@ import mongoose from "mongoose";
 // userSchema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    avatarUrl: String,
+    avatarUrl: { type: String },
     socialOnly: { type: Boolean, default: false },
     username: { type: String, required: true, unique: true },
     password: { type: String },
-    name: { type: String, required: true },
-    location: String,
+    // name: { type: String, required: true },
+    location: { type: String },
     // object가 아닌 array(많은 비디오를 담을 수 있음)
     videos: [
         {
