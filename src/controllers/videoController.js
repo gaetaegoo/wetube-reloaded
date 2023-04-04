@@ -84,7 +84,7 @@ export const getEdit = async (req, res) => {
     // JS에선 생김새 + 데이터타입까지 비교(owner는 object, _id는 string)
     // console.log(typeof video.owner, typeof _id);
     if (String(video.owner) !== String(_id)) {
-        req.flash("error", "You are not the owner of the video.");
+        req.flash("error", "Not authorized");
         return res.status(403).redirect("/");
     }
     return res.render("edit", { pageTitle: `Edit ${video.title}`, video });
@@ -103,6 +103,7 @@ export const postEdit = async (req, res) => {
     }
     // getEdit에서 했던 작업과 똑같이(로그인 유저와 영상의 주인이 같을 때만)
     if (String(video.owner) !== String(_id)) {
+        req.flash("error", "You are not the the owner of the video.");
         return res.status(403).redirect("/");
     }
     // 2개의 인자가 필요 => id, update내용
@@ -182,23 +183,15 @@ export const deleteVideo = async (req, res) => {
         user: { _id },
     } = req.session;
     const video = await Video.findById(id);
-    // const user = await User.findById(_id);
-
     if (!video) {
         return res.status(404).render("404", { pageTitle: "Video not found." });
     }
-
     // getEdit에서 했던 작업과 똑같이(로그인 유저와 영상의 주인이 같을 때만)
     if (String(video.owner) !== String(_id)) {
         return res.status(403).redirect("/");
     }
-
     // 웬만한 경우엔 remove말고 delete를 쓰자
     await Video.findByIdAndDelete(id);
-
-    // user.videos.splice(user.videos.indexOf(id), 1);
-    // user.save();
-
     return res.redirect("/");
 };
 
@@ -215,7 +208,7 @@ export const search = async (req, res) => {
             // `^${keyword}`: keyword로 시작하는 것만
             // `${keyword}$`: keyword로 끝나는 것만
             title: {
-                $regex: new RegExp(keyword, "i"),
+                $regex: new RegExp(`${keyword}$`, "i"),
             },
         }).populate("owner");
     }
@@ -271,19 +264,19 @@ export const createComment = async (req, res) => {
     // 201: Created
 
     // User가 작성한 댓글 DB에 저장
-    // const foundUser = await User.findById(user._id).populate("comments");
+    const foundUser = await User.findById(user._id).populate("comments");
 
-    // if (!foundUser) {
-    //     return res.sendStatus(404);
-    // }
+    if (!foundUser) {
+        return res.sendStatus(404);
+    }
 
-    // const createdComment = await Comment.create({
-    //     owner: foundUser._id,
-    //     video: id,
-    //     text,
-    // });
-    // foundUser.comments.push(createdComment);
-    // foundUser.save();
+    const createdComment = await Comment.create({
+        owner: foundUser._id,
+        video: id,
+        text,
+    });
+    foundUser.comments.push(createdComment);
+    foundUser.save();
 
     // 새로운 댓글에 id를 보내주기 위해 json 사용(f12 -> network -> response에서 확인)
     // JSON response를 보냅니다. 이 메서드는 JSON.stringify()를 사용하여 JSON 문자열로 변환된 매개변수인 response를 보냅니다.
@@ -294,7 +287,6 @@ export const deleteComment = async (req, res) => {
     const { videoId, id } = req.body;
     const { _id } = req.session.user;
     const video = await Video.findById(videoId);
-    // const user = await User.findById(_id);
     const { owner } = await Comment.findById(id);
 
     if (String(owner) !== _id) {
@@ -313,9 +305,8 @@ export const deleteComment = async (req, res) => {
      * indexOf(): 객체 내에서 주어진 값과 일치하는 첫 번째 인덱스를 반환, 일치값이 없다면 -1 반환
      */
     video.comments.splice(video.comments.indexOf(videoId), 1);
+
     video.save();
-    // user.comments.splice(user.comments.indexOf(id), 1);
-    // user.save();
 
     return res.sendStatus(200);
 };
